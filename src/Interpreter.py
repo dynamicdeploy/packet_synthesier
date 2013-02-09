@@ -29,7 +29,6 @@ class Interpreter(Cmd):
     
     def __init__(self):
         Cmd.__init__(self)
-        print sys.platform
         if sys.platform.startswith("win"):
             self.__disableColors()
             
