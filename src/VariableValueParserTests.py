@@ -8,7 +8,6 @@ from  VariableValueParser import VariableValueParser
 
 class VariableValueParserTests(unittest.TestCase):
 
-
     def testSimpleLine(self):
         parser = VariableValueParser({})
         self.assertEquals("line", parser.parseVariableValue("line"))
@@ -69,6 +68,13 @@ class VariableValueParserTests(unittest.TestCase):
         parser = VariableValueParser({'var':'value'})
         self.assertEquals( 'aaa-value-aaa',
                           parser.parseVariableValue("aaa-{$var}-aaa"))
+
+
+    def testEscapeLambdaInNetworkInterfaceName(self):
+        parser = VariableValueParser({})
+        self.assertEquals( r'\Device\NPF_{20305688-5F6A-4A7A-AF1C-1BD8639165A6}',
+                          parser.parseVariableValue(r"\Device\NPF_\{20305688-5F6A-4A7A-AF1C-1BD8639165A6}"))
+        
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

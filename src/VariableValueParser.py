@@ -21,12 +21,13 @@ class VariableValueParser(object):
             numberOfEscapesTotal = matchWithEscapes.count("\\");
             match = re.findall(patternWithouEscape, matchWithEscapes)[0]
             numberOfEscapesAsPartOfMatch = match.count("\\")
-            
+
             escapesOnlyCropped = matchWithEscapes.replace(match, '').replace("\\\\", "\\")
-            line = line.replace( matchWithEscapes, escapesOnlyCropped + match)
             
             if 0 != ((numberOfEscapesTotal - numberOfEscapesAsPartOfMatch) % 2):
-                line = line.replace("\\", '', 1)
+                escapesOnlyCropped = escapesOnlyCropped.replace("\\", '', 1)
+
+            line = line.replace( matchWithEscapes, escapesOnlyCropped + match)
             
             if 0 == ((numberOfEscapesTotal - numberOfEscapesAsPartOfMatch) % 2):   
                 line = handler( line, match )
@@ -67,8 +68,8 @@ class VariableValueParser(object):
         return self.replaceHandleByPattern( line, variableConstructionPatternWithEscape, variableConstructionPattern, self.replaceVariableHandler)
     
     def parseVariableValue( self, value ):
-        line = value.strip()
         
+        line = value.lstrip().rstrip()
         line = self.replaceEnvironmentVariables( line )
         line = self.replaceLambdas( line )
         line = self.replaceHexConstants( line )
