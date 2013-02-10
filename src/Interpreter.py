@@ -9,6 +9,7 @@ import imp
 import os
 import inspect
 import sys
+import re
 from functools import partial
 from  VariableValueParser import VariableValueParser
 
@@ -231,8 +232,9 @@ class Interpreter(Cmd):
     
     def export_cmd_predicate(self, cmd):
         isVariableName_LHS = (cmd.startswith('export') and cmd.find('=') == -1)
+        rhsVariablePattern = re.compile(r'=\{\$')
         
-        if isVariableName_LHS:
+        if isVariableName_LHS or (re.search(rhsVariablePattern, cmd ) is not None):
             return True
         
         return False
