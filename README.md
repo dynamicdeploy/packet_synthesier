@@ -17,9 +17,10 @@ The cli operates with 3 types of objects.
 
 Dependencies:
 -------------
-	Windows version requires [1] and [2]
-	[1]: http://sourceforge.net/projects/pierf/		"pierf"
-	[2]: http://pypi.python.org/pypi/pyreadline		"pyreadline"
+Windows version requires [pierf] [1] and [pyreadline] [2].
+
+ [1]: http://sourceforge.net/projects/pierf/		"pierf"
+ [2]: http://pypi.python.org/pypi/pyreadline		"pyreadline"
 
 Short HOW TO:
 -------------
@@ -28,12 +29,12 @@ Short HOW TO:
 
 You'll see the greeting message
 <pre>
+<code>
    __
  <(o )___
   ( ._> /  
    `---'   
-
->>
+</code>
 </pre>
 
 	>>load EthernetPacket
