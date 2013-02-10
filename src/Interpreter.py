@@ -11,7 +11,6 @@ import inspect
 import sys
 from functools import partial
 from  VariableValueParser import VariableValueParser
-import readline
 
 class Interpreter(Cmd):
     
@@ -32,7 +31,10 @@ class Interpreter(Cmd):
         Cmd.__init__(self)
         if sys.platform.startswith("win"):
             self.__disableColors()
-            
+        
+        self.__home = os.path.expanduser("~")
+        self.__appDir = os.path.dirname(__file__)
+        self.__historyFile = os.path.normpath(self.__home + "/.pkt_synth")
         self.__packetGenerator = None
         self.__packetSender = None
         self.__context = {}
@@ -41,10 +43,8 @@ class Interpreter(Cmd):
         self.prompt = self.OKGREEN + ">>" + self.ENDC
         self.__valueParser = VariableValueParser(self.__context)
         
-        try:
-            readline.read_history_file(".pkt_synth")
-        except:
-            pass
+        self.loadHistory()
+        
     
     def __disableColors(self):
         self.HEADER = ''
@@ -65,7 +65,7 @@ class Interpreter(Cmd):
         definedModules = []
         allClasses = {}
 
-        for fileInCurDir in os.listdir("."):
+        for fileInCurDir in os.listdir(self.__appDir):
             if fileInCurDir.endswith(fileExtensions):
                 filename = fileInCurDir.split('.')[0]
                 fp, pathname, description = imp.find_module(filename)
@@ -80,6 +80,20 @@ class Interpreter(Cmd):
                 definedModules.append(className)
         return definedModules
     
+    def loadHistory(self):
+        try:
+            import readline
+            readline.read_history_file(self.__historyFile)
+        except:
+            pass
+
+    def saveHistory(self):
+        try:
+            import readline
+            readline.write_history_file(self.__historyFile)
+        except:
+            pass
+
     def cmdloop(self):
         intro = self.INTRO
         
@@ -93,11 +107,8 @@ class Interpreter(Cmd):
             except Exception:
                 import traceback
                 traceback.print_exc()
-        
-        try:
-            readline.write_history_file(".pkt_synth")
-        except:
-            pass
+
+        self.saveHistory()   
             
     
     def do_quit(self, arg):

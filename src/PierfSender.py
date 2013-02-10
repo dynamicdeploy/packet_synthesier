@@ -3,6 +3,7 @@
 from AbstractSender import AbstractSender
 import tempfile
 import subprocess
+import os
 
 class PierfSender(AbstractSender):
     '''
@@ -50,15 +51,22 @@ class PierfSender(AbstractSender):
     def runPierf(self, configFileName):
         subprocess.call([self.__context['pierf_app_full_file_name'],configFileName])
     
-    def sendPacket(self, packet):
-        
-        with tempfile.NamedTemporaryFile(mode='w+') as tmpFile:
-            tmpFile.write( 
-                self.generatePierfXml(
-                    self.convert2Hex(
-                        self.cutCRC32(packet))))
+    def sendPacket(self, packet):    
+        try:
+            tmpFileName = None
+            with tempfile.NamedTemporaryFile(mode='w+', delete=False) as tmpFile:
+                tmpFile.write( 
+                    self.generatePierfXml(
+                        self.convert2Hex(
+                            self.cutCRC32(packet))))
+                
+                tmpFile.flush()
+                tmpFileName = tmpFile.name
             
-            tmpFile.flush()
-            self.runPierf(tmpFile.name)
+            self.runPierf(tmpFileName)
+        finally:
+            if tmpFileName:
+                os.unlink(tmpFileName)
+
             
         return None
