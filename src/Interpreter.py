@@ -17,10 +17,11 @@ class Interpreter(Cmd):
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
-    YELLOW = '\033[93m'
+    BRYELLOW = '\033[93m'
+    YELLOW = '\033[33m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
-    INTRO = YELLOW + \
+    INTRO = BRYELLOW + \
 '''   __
  <(\033[91mo\033[93m )___
   ( ._> /  
@@ -50,6 +51,7 @@ class Interpreter(Cmd):
         self.HEADER = ''
         self.OKBLUE = ''
         self.OKGREEN = ''
+        self.BRYELLOW = ''
         self.YELLOW = ''
         self.FAIL = ''
         self.ENDC = ''
@@ -133,7 +135,7 @@ class Interpreter(Cmd):
         
     def print_env(self, arg):
         for var in self.__context.keys():
-            print var + "=" + repr(self.__context[var])
+            print self.BRYELLOW + var + self.ENDC + "=" + repr(self.__context[var])
         
     def do_export(self, arg):
         if '' == arg:
