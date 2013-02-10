@@ -204,12 +204,10 @@ class Interpreter(Cmd):
                 fp.close()
                           
     def do_help(self, arg):
-        print "\t list - list of all available packet types generators and list of all available packet senders"
         print "\t load [sender,generator] - load available packet sender or available packet type generator"
-        print "\t exit - exit application"
-        print "\t send - generate and send packet"
-        print "\t export [variable = value] - setting value to a context variable"
-        print "\t press tab for auto complete line"
+        print "\t quit - exit application"
+        print "\t send [number_of_packets_to_send] - generate and send packet"
+        print "\t export [variable = value | {lambda} | {$variable} ] - setting value to a context variable"
         
     def completedefault_impl(self, predicate, all_targets, *ignored):
         if predicate(ignored[1]):
