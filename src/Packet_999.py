@@ -4,6 +4,7 @@ Created on Dec 9, 2012
 @author: oleg
 '''
 from AbstractPacket import AbstractPacket
+from PacketSenderCommon import PacketSenderCommon
 import binascii
 import socket
 
@@ -21,6 +22,7 @@ class Packet_999(AbstractPacket):
         
         context.update(self.__defaults)
         self.__context = context
+        self.__common = PacketSenderCommon()
         
     def getShortDescription(self):
         return ""
@@ -51,21 +53,15 @@ class Packet_999(AbstractPacket):
         return ""
 
     def __generatePacketSid(self):
-        network_order = socket.htons(int( self.__context['sid'], 16))
-        return (chr((network_order) & 0xff)) + (chr((network_order >> 8) & 0xff)) 
+        return self.__common.hexStr2int_16_networkOrder(self.__context['sid'])
+    
 
     def __generatePayload(self):
         return self.__context['payload']
 
     def __generateCRC(self, packet ):
-        crc32value = socket.htonl(binascii.crc32(packet) & 0xffffffff)
-        result = ""
-        result += chr((crc32value >> 24) & 0xff)
-        result += chr((crc32value >> 16) & 0xff)
-        result += chr((crc32value >> 8) & 0xff)
-        result += chr((crc32value) & 0xff)
-        return result
-
+        return self.__common.hexString2crc32_networkOrder(packet)
+    
     def generatePacket(self):
         resultPacket = self.__generatePreamble() + \
                        self.__generatePacketSid() + \
