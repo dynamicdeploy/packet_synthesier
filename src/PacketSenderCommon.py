@@ -1,8 +1,6 @@
 import binascii
 import socket
 
-
-
 class PacketSenderCommon(object):
     def generateMAC(self, strValue):
         listOctets = strValue.split(':');
@@ -10,6 +8,9 @@ class PacketSenderCommon(object):
         for octet in listOctets:
             resultMAC += (chr(int( octet, 16)))
         return resultMAC
+    
+    def hexStr2int_8_networkOrder(self, hexStr):
+        return (chr((int( hexStr, 16)) & 0xff))
     
     def hexStr2int_16_networkOrder(self, hexStr):
         network_order = socket.htons(int( hexStr, 16))
@@ -24,5 +25,4 @@ class PacketSenderCommon(object):
         result += chr((crc32value) & 0xff)
         
         return result
-        
-        
+          
