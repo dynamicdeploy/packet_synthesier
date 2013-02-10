@@ -68,6 +68,7 @@ Setting the Ethernet packet payload:
 	>>export
 
 The new payload now looks like:
+
 	dst_mac='ff:ff:ff:ff:ff:ff'
 	tag=''
 	ether_type='0x801'
@@ -96,7 +97,7 @@ export command without arguments prints the internal environment
 	>>export foo={"\xAB" * 10}
 	>>export bar={$foo}
   
-*Note:** It is possible to use escape symbol **\*
+*Note:* It is possible to use escape symbol *\*
   
 **load [module]**
   
