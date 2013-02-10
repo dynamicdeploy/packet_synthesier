@@ -209,6 +209,12 @@ class Interpreter(Cmd):
         print "\t quit - exit application"
         print "\t send [number_of_packets_to_send] - generate and send packet"
         print "\t export [variable = value | {lambda} | {$variable} ] - setting value to a context variable"
+        print "\t clobber - reset everything, besides history"
+    
+    def do_clobber(self):
+        self.__packetGenerator = None
+        self.__packetSender = None
+        self.__context = {}
         
     def completedefault_impl(self, predicate, all_targets, *ignored):
         if predicate(ignored[1]):
