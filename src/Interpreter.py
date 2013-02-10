@@ -11,6 +11,7 @@ import inspect
 import sys
 from functools import partial
 from  VariableValueParser import VariableValueParser
+import readline
 
 class Interpreter(Cmd):
     
@@ -39,6 +40,11 @@ class Interpreter(Cmd):
         self.__listPacketSenders = self.__findInheritedClasses('AbstractSender')
         self.prompt = self.OKGREEN + ">>" + self.ENDC
         self.__valueParser = VariableValueParser(self.__context)
+        
+        try:
+            readline.read_history_file(".pkt_synth")
+        except:
+            pass
     
     def __disableColors(self):
         self.HEADER = ''
@@ -88,6 +94,10 @@ class Interpreter(Cmd):
                 import traceback
                 traceback.print_exc()
         
+        try:
+            readline.write_history_file(".pkt_synth")
+        except:
+            pass
             
     
     def do_quit(self, arg):
