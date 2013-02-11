@@ -4,17 +4,7 @@ import re
 
 class PacketSenderCommonTests(unittest.TestCase):
     def str2int(self, strValue ):
-        stripped = strValue.strip(" \r\n\t").lower()
-        if stripped.startswith('0x'):
-            return int(stripped, 16)
-        
-        if stripped.startswith('0b'):
-            return int(stripped, 2)
-        
-        if stripped.startswith('0o'):
-            return int(stripped, 8)
-        
-        return int(strValue)
+        return PacketSenderCommon().str2int(strValue)
     
     def testStrToInt(self):
         self.assertEquals(0x16, self.str2int('0x016'))
