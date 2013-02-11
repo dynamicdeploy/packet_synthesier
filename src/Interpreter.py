@@ -12,6 +12,8 @@ import sys
 import re
 from functools import partial
 from  VariableValueParser import VariableValueParser
+from History import History
+from History import ReadLineImpl
 
 class Interpreter(Cmd):
     
@@ -45,7 +47,9 @@ class Interpreter(Cmd):
         self.prompt = self.OKGREEN + ">>" + self.ENDC
         self.__valueParser = VariableValueParser(self.__context)
         
-        self.loadHistory()
+        readlineImpl = ReadLineImpl(self.__historyFile)
+        self.__history = History( readlineImpl )
+        self.__history.load()
         
     
     def __disableColors(self):
@@ -82,20 +86,9 @@ class Interpreter(Cmd):
             if str(inspect.getmro(allClasses[className])).find(baseClass + ".") != -1:
                 definedModules.append(className)
         return definedModules
-    
-    def loadHistory(self):
-        try:
-            import readline
-            readline.read_history_file(self.__historyFile)
-        except:
-            pass
 
     def saveHistory(self):
-        try:
-            import readline
-            readline.write_history_file(self.__historyFile)
-        except:
-            pass
+        self.__history.save()
 
     def cmdloop(self):
         intro = self.INTRO
@@ -210,12 +203,44 @@ class Interpreter(Cmd):
         print "\t send [number_of_packets_to_send] - generate and send packet"
         print "\t export [variable = value | {lambda} | {$variable} ] - setting value to a context variable"
         print "\t clobber - reset everything, besides history"
+        print "\t history [[script] | [last <number>] | [clear]]"
     
-    def do_clobber(self):
+    def do_clobber(self, arg):
+        return self.exceptSafeInvoker(partial(self.clobber_impl,arg)) 
+      
+    def clobber_impl(self, arg):
         self.__packetGenerator = None
         self.__packetSender = None
         self.__context = {}
         
+    def do_history(self, arg):
+        return self.exceptSafeInvoker(partial(self.history_impl,arg))
+    
+    def printHistory(self, history):
+        for item in history:
+            print item
+    
+    def history_impl(self, arg):
+        if arg.startswith("clear"):
+            self.__history.clear();
+            return
+        
+        if '' == arg:
+            self.printHistory(self.__history.get(self.__history.passAllPredicate))
+            return
+        
+        if arg.startswith('script'):
+            self.printHistory(self.__history.get(self.__history.passScript))
+            return
+                
+        if arg.startswith('last'):
+            linesNumber = int(arg.replace('last', '').strip(" "))
+            self.printHistory(self.__history.getLastN_lines(linesNumber))
+            return
+        
+        print "history syntax error, please type help for more information"
+        
+    
     def completedefault_impl(self, predicate, all_targets, *ignored):
         if predicate(ignored[1]):
             if ignored[0] == '':
@@ -244,6 +269,9 @@ class Interpreter(Cmd):
             return True
         
         return False
+    
+    def history_cmd_predicate(self, cmd):
+        return cmd.startswith("history")
         
     def completedefault(self, *ignored):
         completation_variants =\
@@ -260,6 +288,13 @@ class Interpreter(Cmd):
         if completation_variants is not None:
             return completation_variants
         
+        completation_variants =\
+            self.completedefault_impl( self.history_cmd_predicate, 
+                                       ['last', 'script', 'clear'],
+                                       *ignored )
+        if completation_variants is not None:
+            return completation_variants
+        
         return []
             
     def exceptSafeInvoker(self, functor):
@@ -272,7 +307,8 @@ class Interpreter(Cmd):
         except KeyboardInterrupt:
             return True
         except:
-            print "Unexpected error:", sys.exc_info()[0]
+            import traceback
+            traceback.print_exc()
         
         return None 
     
