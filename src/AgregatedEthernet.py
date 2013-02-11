@@ -19,7 +19,6 @@ class AgregatedEthernet(AbstractPacket):
                            'src_mac_level0' : '00:0f:fe:91:fe:d1',
                            'ether_type_level0' : '0x9201',
                            'ether_tag_level0' : '',
-                           'ether_payload_level0' : "\x80" * 42,
                            'preamble_999' : "55:55:55:55:55:55:55:D5",
                            'sid999' : '0xE001',
                            'tag999' : '',
