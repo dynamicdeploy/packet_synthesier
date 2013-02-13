@@ -15,10 +15,13 @@ The cli operates with 3 types of objects.
 
 Dependencies:
 -------------
-Windows version requires [pierf] [1] and [pyreadline] [2].
+All versions requires [pymock][3]
+  
+Windows version requires [pierf] [1],  and [pyreadline] [2].
 
  [1]: http://sourceforge.net/projects/pierf/
  [2]: http://pypi.python.org/pypi/pyreadline/
+ [3]: http://pypi.python.org/pypi/pymock
 
 Short HOW TO:
 -------------
