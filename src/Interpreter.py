@@ -42,6 +42,8 @@ class Interpreter(Cmd):
         self.__packetGenerator = None
         self.__packetSender = None
         self.__context = {}
+        self.__packet_context_difference = set([])
+        self.__sender_context_difference = set([])
         self.__listPacketGenerators = self.__findInheritedClasses('AbstractPacket')
         self.__listPacketSenders = self.__findInheritedClasses('AbstractSender')
         self.prompt = self.OKGREEN + ">>" + self.ENDC
@@ -154,17 +156,27 @@ class Interpreter(Cmd):
     def do_load(self, arg):
         return self.exceptSafeInvoker(partial(self.load_impl,arg))
     
+    def removeItems(self, dict, keys ):
+        for key in keys:
+            dict.pop(key)
+    
     def load_impl(self, arg):
         if arg == '':
             self.print_possible_load_list()
             return
         
         if( str(arg) in self.__listPacketGenerators):
+            self.removeItems(self.__context, self.__packet_context_difference)
+            contextCopy = self.__context.copy()
             self.loadGenerator(arg)
+            self.__packet_context_difference = set(self.__context.keys()) - set(contextCopy.keys())
             return
         
         if( arg in self.__listPacketSenders):
+            self.removeItems(self.__context, self.__sender_context_difference)
+            contextCopy = self.__context.copy()
             self.loadSender(arg)
+            self.__sender_context_difference = set(self.__context.keys()) - set(contextCopy.keys())
             return
         
         print arg + " is not loaded, no such module "
