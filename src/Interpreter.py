@@ -46,7 +46,7 @@ class Interpreter(Cmd):
         self.__sender_context_difference = set([])
         self.__listPacketGenerators = self.__findInheritedClasses('AbstractPacket')
         self.__listPacketSenders = self.__findInheritedClasses('AbstractSender')
-        self.prompt = self.OKGREEN + ">>" + self.ENDC
+        self.prompt = self.OKGREEN + ">> " + self.ENDC
         self.__valueParser = VariableValueParser(self.__context)
         
         readlineImpl = ReadLineImpl(self.__historyFile)
